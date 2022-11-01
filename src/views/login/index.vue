@@ -48,11 +48,12 @@
 <script setup lang="ts">
 import { Icon } from 'tdesign-vue-next'
 import type { TokenRequest } from '@/api/types'
-import { reactive } from 'vue'
+import { onMounted, reactive } from 'vue'
+import tokenApi from '@/api/token'
 
 const loginForm = reactive<TokenRequest>({
-  username: '',
-  password: ''
+  username: 'admin',
+  password: 'admi123'
 })
 
 const rules = {
@@ -69,6 +70,12 @@ const rules = {
     }
   ]
 }
+
+onMounted(() => {
+  tokenApi.createToken(loginForm).then((res) => {
+    console.log(res)
+  })
+})
 </script>
 
 <style scoped lang="less">
