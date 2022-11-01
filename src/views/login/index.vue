@@ -10,6 +10,7 @@
           class="login-form"
           :data="loginForm"
           :rules="rules"
+          @submit="handleLogin"
         >
           <t-form-item name="username">
             <t-input
@@ -18,7 +19,7 @@
               v-model="loginForm.username"
             >
               <template #prefix-icon>
-                <icon name="desktop" />
+                <Icon name="desktop" />
               </template>
             </t-input>
           </t-form-item>
@@ -31,7 +32,7 @@
               v-model="loginForm.password"
             >
               <template #prefix-icon>
-                <icon name="lock-on" />
+                <Icon name="lock-on" />
               </template>
             </t-input>
           </t-form-item>
@@ -46,14 +47,16 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from 'tdesign-vue-next'
+import { Icon, MessagePlugin, type SubmitContext } from 'tdesign-vue-next'
 import type { TokenRequest } from '@/api/types'
-import { onMounted, reactive } from 'vue'
-import tokenApi from '@/api/token'
+import { reactive, ref } from 'vue'
+import form from 'tdesign-vue-next/es/form'
+import { useAppStore } from '@/store'
+import { useRouter } from 'vue-router'
 
 const loginForm = reactive<TokenRequest>({
-  username: 'admin',
-  password: 'admi123'
+  username: '',
+  password: ''
 })
 
 const rules = {
@@ -70,12 +73,22 @@ const rules = {
     }
   ]
 }
-
-onMounted(() => {
-  tokenApi.createToken(loginForm).then((res) => {
-    console.log(res)
-  })
-})
+const appStore = useAppStore()
+const loading = ref(false)
+const router = useRouter()
+const handleLogin = async ({ validateResult }: SubmitContext) => {
+  if (validateResult !== true) {
+    return
+  }
+  loading.value = true
+  try {
+    await appStore.login(loginForm)
+    await MessagePlugin.success('登录成功')
+    await router.push({ name: 'dashboard' })
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 
 <style scoped lang="less">

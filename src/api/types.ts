@@ -6,3 +6,7 @@ export type ErrorResponse = {
   code: number
   message: string
 }
+
+export type AppState = {
+  token: string
+}

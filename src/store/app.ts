@@ -1,3 +1,19 @@
-import type { StoreDefinition } from "pinia";
+import type { AppState, TokenRequest } from '@/api/types'
+import { defineStore, type StoreDefinition } from 'pinia'
+import tokenApi from '@/api/token'
 
-export const useAppStore: StoreDefinition<string, Appstore> = 
+export const useAppStore: StoreDefinition<string, AppState> = defineStore(
+  'app',
+  {
+    state: () => {
+      return {
+        token: ''
+      }
+    },
+    actions: {
+      async login(loginForm: TokenRequest): Promise<void> {
+        this.token = await tokenApi.createToken(loginForm)
+      }
+    }
+  }
+)
