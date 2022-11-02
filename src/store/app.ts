@@ -10,6 +10,7 @@ export const useAppStore: StoreDefinition<string, AppState> = defineStore(
         token: ''
       }
     },
+    persist: true,
     actions: {
       async login(loginForm: TokenRequest): Promise<void> {
         this.token = await tokenApi.createToken(loginForm)

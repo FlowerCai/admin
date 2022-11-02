@@ -76,6 +76,7 @@ const rules = {
 const appStore = useAppStore()
 const loading = ref(false)
 const router = useRouter()
+
 const handleLogin = async ({ validateResult }: SubmitContext) => {
   if (validateResult !== true) {
     return
