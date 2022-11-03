@@ -51,7 +51,7 @@ import { Icon, MessagePlugin, type SubmitContext } from 'tdesign-vue-next'
 import type { TokenRequest } from '@/api/types'
 import { reactive, ref } from 'vue'
 import form from 'tdesign-vue-next/es/form'
-import { useAppStore } from '@/store'
+import { useAppStore, useUserStore } from '@/store'
 import { useRouter } from 'vue-router'
 
 const loginForm = reactive<TokenRequest>({
@@ -76,6 +76,7 @@ const rules = {
 const appStore = useAppStore()
 const loading = ref(false)
 const router = useRouter()
+const userStore = useUserStore()
 
 const handleLogin = async ({ validateResult }: SubmitContext) => {
   if (validateResult !== true) {
@@ -84,6 +85,7 @@ const handleLogin = async ({ validateResult }: SubmitContext) => {
   loading.value = true
   try {
     await appStore.login(loginForm)
+    await userStore.fetchCurrentUser()
     await MessagePlugin.success('登录成功')
     await router.push({ name: 'dashboard' })
   } finally {
