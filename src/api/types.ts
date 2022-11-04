@@ -9,6 +9,7 @@ export type ErrorResponse = {
 
 export type AppState = {
   token: string
+  menuCollapse: boolean
 }
 
 export type UserType = {

@@ -18,20 +18,22 @@ const router: Router = createRouter({
 })
 
 const whiteList: Array<RouteRecordName | null | undefined> = ['login']
-const num: number = 0
 
 router.beforeEach((to, from, next) => {
   const appStore = useAppStore()
   if (!appStore.token) {
-    console.log(2)
-    whiteList.indexOf(to.name) !== -1
-      ? next()
-      : next(`/login?redirect=${to.path}`)
+    console.log(to.name)
+    if (whiteList.indexOf(to.name) !== -1) {
+      console.log(2)
+      next()
+    } else {
+      console.log(3)
+      next(`/login?redirect=${to.path}`)
+    }
   }
   if (appStore.token && to.path === '/login') {
     next({ name: 'dashboard' })
   }
-
   next()
 })
 

@@ -1,6 +1,8 @@
+import { useAppStore } from '@/store'
 import axios, {
   AxiosError,
   type AxiosInstance,
+  type AxiosRequestConfig,
   type AxiosResponse
 } from 'axios'
 import { MessagePlugin } from 'tdesign-vue-next'
@@ -20,7 +22,20 @@ request.interceptors.response.use(
     const responseData: ErrorResponse | undefined = error.response?.data
     responseData && (await MessagePlugin.error(responseData.message))
 
+    if (error.response?.status === 401) {
+      const appStore = useAppStore()
+      await appStore.logout()
+    }
     return Promise.reject(error)
   }
 )
+
+const tokenPrefix = 'Bearer '
+request.interceptors.request.use((req: AxiosRequestConfig) => {
+  const appStore = useAppStore()
+  if (appStore.token && req.headers) {
+    req.headers['Authorization'] = tokenPrefix + appStore.token
+  }
+  return req
+})
 export default request
